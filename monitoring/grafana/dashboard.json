@@ -1,0 +1,40 @@
+{
+  "title": "EV Substation Load Monitor",
+  "timezone": "browser",
+  "editable": true,
+  "panels": [
+    {
+      "id": 1,
+      "type": "graph",
+      "title": "Live Substation Load",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 9 },
+      "targets": [
+        {
+          "expr": "evs{instance=\"sub1:8000\"}",
+          "legendFormat": "Substation 1",
+          "refId": "A"
+        },
+        {
+          "expr": "evs{instance=\"sub2:8000\"}",
+          "legendFormat": "Substation 2",
+          "refId": "B"
+        }
+      ],
+      "lines": true,
+      "linewidth": 2,
+      "fill": 1,
+      "points": false,
+      "tooltip": { "shared": true },
+      "xaxis": { "mode": "time" },
+      "yaxis": {
+        "format": "short",
+        "label": "EV Count",
+        "logBase": 1,
+        "min": 0
+      }
+    }
+  ],
+  "schemaVersion": 30,
+  "version": 1,
+  "refresh": "5s"
+}
