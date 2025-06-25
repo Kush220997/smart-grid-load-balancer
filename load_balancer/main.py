@@ -1,24 +1,25 @@
 from flask import Flask, request, jsonify
-import requests as rq
+import requests
 
 app = Flask(__name__)
-subs = ['http://sub1:5000', 'http://sub2:5000']
+SUBSTATION_ENDPOINTS = ['http://substation1:5000', 'http://substation2:5000']
 
-def get_ld(url):
+def query_load(substation_url):
     try:
-        res = rq.get(f"{url.replace(':5000', ':8000')}/metrics")
-        for line in res.text.split('\n'):
-            if 'evs' in line and not line.startswith('#'):
-                return float(line.split()[-1])
+        metrics_url = substation_url.replace(':5000', ':8000') + '/metrics'
+        response = requests.get(metrics_url)
+        for line in response.text.split('\n'):
+            if 'substation_load' in line and not line.startswith('#'):
+                return float(line.split(' ')[-1])
     except:
         return float('inf')
     return float('inf')
 
-@app.route('/assign', methods=['POST'])
-def assign_sub():
-    min_ld = min(subs, key=get_ld)
-    res = rq.post(f"{min_ld}/begin")
-    return res.json(), res.status_code
+@app.route('/assign_substation', methods=['POST'])
+def assign_substation():
+    selected = min(SUBSTATION_ENDPOINTS, key=query_load)
+    response = requests.post(f"{selected}/begin_charging")
+    return response.json(), response.status_code
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=7000)
