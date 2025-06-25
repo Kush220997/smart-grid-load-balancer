@@ -1,5 +1,5 @@
 {
-  "title": "EV Substation Load Monitor",
+  "title": "Smart Grid Substation Load",
   "timezone": "browser",
   "editable": true,
   "panels": [
@@ -10,14 +10,9 @@
       "gridPos": { "x": 0, "y": 0, "w": 24, "h": 9 },
       "targets": [
         {
-          "expr": "evs{instance=\"sub1:8000\"}",
-          "legendFormat": "Substation 1",
+          "expr": "substation_load",
+          "legendFormat": "{{instance}}",
           "refId": "A"
-        },
-        {
-          "expr": "evs{instance=\"sub2:8000\"}",
-          "legendFormat": "Substation 2",
-          "refId": "B"
         }
       ],
       "lines": true,
