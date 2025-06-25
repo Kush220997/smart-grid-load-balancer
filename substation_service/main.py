@@ -4,22 +4,23 @@ import threading
 import time
 
 app = Flask(__name__)
-evs = Gauge('evs', 'EVs being charged')
-n = 0
+substation_load = Gauge('substation_load', 'Current active charging sessions')
 
-@app.route('/begin', methods=['POST'])
-def begin():
-    global n
-    n += 1
-    evs.set(n)
-    threading.Thread(target=sim).start()
-    return jsonify({"msg": "Charging started"}), 200
+active_sessions = 0
 
-def sim():
-    global n
+@app.route('/begin_charging', methods=['POST'])
+def begin_charging():
+    global active_sessions
+    active_sessions += 1
+    substation_load.set(active_sessions)
+    threading.Thread(target=simulate_charge_process).start()
+    return jsonify({"result": "Charging started"}), 200
+
+def simulate_charge_process():
+    global active_sessions
     time.sleep(10)
-    n -= 1
-    evs.set(n)
+    active_sessions -= 1
+    substation_load.set(active_sessions)
 
 if __name__ == '__main__':
     start_http_server(8000)
